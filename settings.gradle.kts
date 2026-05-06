@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "uuid-kotlin"
+
