@@ -50,6 +50,16 @@ val androidSdkManager = projectAndroidSdkDir.resolve(
     },
 )
 val androidSdkInstallMarker = projectAndroidSdkDir.resolve(".install-complete")
+val requiredAndroidSdkPackageDirs = listOf(
+    projectAndroidSdkDir.resolve("platform-tools"),
+    projectAndroidSdkDir.resolve("platforms/android-$projectCompileSdk"),
+    projectAndroidSdkDir.resolve("build-tools/$projectAndroidBuildTools"),
+)
+
+fun isProjectAndroidSdkInstalled(): Boolean =
+    androidSdkInstallMarker.exists() &&
+        androidSdkManager.exists() &&
+        requiredAndroidSdkPackageDirs.all { it.exists() }
 
 fun writeAndroidLocalProperties() {
     val sdkDirPropertyValue = projectAndroidSdkDir.absolutePath.replace("\\", "/")
@@ -114,7 +124,7 @@ fun downloadAndroidCommandLineTools() {
 }
 
 fun installProjectAndroidSdk(execOperations: ExecOperations) {
-    if (androidSdkInstallMarker.exists() && androidSdkManager.exists()) {
+    if (isProjectAndroidSdkInstalled()) {
         writeAndroidLocalProperties()
         println("setup-android-sdk: SDK already installed at $projectAndroidSdkDir")
         return
@@ -423,6 +433,196 @@ tasks.register("test") {
     )
 
     dependsOn(defaultTestTasks.mapNotNull { taskName -> tasks.findByName(taskName) })
+}
+
+val fullTargetBuildTaskNames = setOf(
+    "compileAndroidMain",
+    "compileAndroidHostTest",
+    "compileAndroidDeviceTest",
+    "assembleAndroidMain",
+    "assembleAndroidHostTest",
+    "assembleUnitTest",
+    "assembleAndroidTest",
+    "assembleAndroidDeviceTest",
+    "testAndroidHostTest",
+    "jvmMainClasses",
+    "jvmTestClasses",
+    "jvmTest",
+    "jsMainClasses",
+    "jsTestClasses",
+    "jsBrowserTest",
+    "jsNodeTest",
+    "jsTest",
+    "wasmJsMainClasses",
+    "wasmJsTestClasses",
+    "wasmJsBrowserTest",
+    "wasmJsNodeTest",
+    "wasmJsTest",
+    "wasmWasiMainClasses",
+    "wasmWasiTestClasses",
+    "wasmWasiNodeTest",
+    "wasmWasiTest",
+    "macosArm64Binaries",
+    "macosArm64TestBinaries",
+    "macosArm64Test",
+    "iosArm64Binaries",
+    "iosArm64TestBinaries",
+    "iosSimulatorArm64Binaries",
+    "iosSimulatorArm64TestBinaries",
+    "iosSimulatorArm64Test",
+    "iosX64Binaries",
+    "iosX64TestBinaries",
+    "iosX64Test",
+    "tvosArm64Binaries",
+    "tvosArm64TestBinaries",
+    "tvosSimulatorArm64Binaries",
+    "tvosSimulatorArm64TestBinaries",
+    "tvosSimulatorArm64Test",
+    "watchosArm32Binaries",
+    "watchosArm32TestBinaries",
+    "watchosArm64Binaries",
+    "watchosArm64TestBinaries",
+    "watchosDeviceArm64Binaries",
+    "watchosDeviceArm64TestBinaries",
+    "watchosSimulatorArm64Binaries",
+    "watchosSimulatorArm64TestBinaries",
+    "watchosSimulatorArm64Test",
+    "linuxX64Binaries",
+    "linuxX64TestBinaries",
+    "linuxArm64Binaries",
+    "linuxArm64TestBinaries",
+    "mingwX64Binaries",
+    "mingwX64TestBinaries",
+    "androidNativeArm32Binaries",
+    "androidNativeArm32TestBinaries",
+    "androidNativeArm64Binaries",
+    "androidNativeArm64TestBinaries",
+    "androidNativeX86Binaries",
+    "androidNativeX86TestBinaries",
+    "androidNativeX64Binaries",
+    "androidNativeX64TestBinaries",
+    "assembleUuidXCFramework",
+    "assembleUuidDebugXCFramework",
+    "assembleUuidReleaseXCFramework",
+    "assembleDebugIosFatFrameworkForUuidXCFramework",
+    "assembleReleaseIosFatFrameworkForUuidXCFramework",
+    "assembleDebugIosSimulatorFatFrameworkForUuidXCFramework",
+    "assembleReleaseIosSimulatorFatFrameworkForUuidXCFramework",
+    "assembleDebugMacosFatFrameworkForUuidXCFramework",
+    "assembleReleaseMacosFatFrameworkForUuidXCFramework",
+    "assembleDebugTvosFatFrameworkForUuidXCFramework",
+    "assembleReleaseTvosFatFrameworkForUuidXCFramework",
+    "assembleDebugTvosSimulatorFatFrameworkForUuidXCFramework",
+    "assembleReleaseTvosSimulatorFatFrameworkForUuidXCFramework",
+    "assembleDebugWatchosFatFrameworkForUuidXCFramework",
+    "assembleReleaseWatchosFatFrameworkForUuidXCFramework",
+    "assembleDebugWatchosSimulatorFatFrameworkForUuidXCFramework",
+    "assembleReleaseWatchosSimulatorFatFrameworkForUuidXCFramework",
+    "embedSwiftExportForXcode",
+)
+
+val publicationExportTaskNames = setOf(
+    "exportCommonSourceSetsMetadataLocationsForMetadataApiElements",
+    "exportRootPublicationCoordinatesForMetadataApiElements",
+    "exportCrossCompilationMetadataForAndroidNativeArm32ApiElements",
+    "exportCrossCompilationMetadataForAndroidNativeArm64ApiElements",
+    "exportCrossCompilationMetadataForAndroidNativeX86ApiElements",
+    "exportCrossCompilationMetadataForAndroidNativeX64ApiElements",
+    "exportCrossCompilationMetadataForIosArm64ApiElements",
+    "exportCrossCompilationMetadataForIosSimulatorArm64ApiElements",
+    "exportCrossCompilationMetadataForIosX64ApiElements",
+    "exportCrossCompilationMetadataForLinuxArm64ApiElements",
+    "exportCrossCompilationMetadataForLinuxX64ApiElements",
+    "exportCrossCompilationMetadataForMacosArm64ApiElements",
+    "exportCrossCompilationMetadataForMingwX64ApiElements",
+    "exportCrossCompilationMetadataForTvosArm64ApiElements",
+    "exportCrossCompilationMetadataForTvosSimulatorArm64ApiElements",
+    "exportCrossCompilationMetadataForWatchosArm32ApiElements",
+    "exportCrossCompilationMetadataForWatchosArm64ApiElements",
+    "exportCrossCompilationMetadataForWatchosDeviceArm64ApiElements",
+    "exportCrossCompilationMetadataForWatchosSimulatorArm64ApiElements",
+    "exportTargetPublicationCoordinatesForAndroidApiElements",
+    "exportTargetPublicationCoordinatesForAndroidRuntimeElements",
+    "exportTargetPublicationCoordinatesForAndroidNativeArm32ApiElements",
+    "exportTargetPublicationCoordinatesForAndroidNativeArm64ApiElements",
+    "exportTargetPublicationCoordinatesForAndroidNativeX86ApiElements",
+    "exportTargetPublicationCoordinatesForAndroidNativeX64ApiElements",
+    "exportTargetPublicationCoordinatesForIosArm64ApiElements",
+    "exportTargetPublicationCoordinatesForIosSimulatorArm64ApiElements",
+    "exportTargetPublicationCoordinatesForIosX64ApiElements",
+    "exportTargetPublicationCoordinatesForJsApiElements",
+    "exportTargetPublicationCoordinatesForJsRuntimeElements",
+    "exportTargetPublicationCoordinatesForJvmApiElements",
+    "exportTargetPublicationCoordinatesForJvmRuntimeElements",
+    "exportTargetPublicationCoordinatesForLinuxArm64ApiElements",
+    "exportTargetPublicationCoordinatesForLinuxX64ApiElements",
+    "exportTargetPublicationCoordinatesForMacosArm64ApiElements",
+    "exportTargetPublicationCoordinatesForMingwX64ApiElements",
+    "exportTargetPublicationCoordinatesForTvosArm64ApiElements",
+    "exportTargetPublicationCoordinatesForTvosSimulatorArm64ApiElements",
+    "exportTargetPublicationCoordinatesForWasmJsApiElements",
+    "exportTargetPublicationCoordinatesForWasmJsRuntimeElements",
+    "exportTargetPublicationCoordinatesForWasmWasiApiElements",
+    "exportTargetPublicationCoordinatesForWasmWasiRuntimeElements",
+    "exportTargetPublicationCoordinatesForWatchosArm32ApiElements",
+    "exportTargetPublicationCoordinatesForWatchosArm64ApiElements",
+    "exportTargetPublicationCoordinatesForWatchosDeviceArm64ApiElements",
+    "exportTargetPublicationCoordinatesForWatchosSimulatorArm64ApiElements",
+)
+
+val xcodeSwiftExportEnvironmentNames = listOf(
+    "SDK_NAME",
+    "CONFIGURATION",
+    "TARGET_BUILD_DIR",
+    "BUILT_PRODUCTS_DIR",
+    "ARCHS",
+    "FRAMEWORKS_FOLDER_PATH",
+    "DEPLOYMENT_TARGET_SETTING_NAME",
+)
+
+fun hasXcodeSwiftExportEnvironment(): Boolean {
+    if (!xcodeSwiftExportEnvironmentNames.all { !System.getenv(it).isNullOrBlank() }) {
+        return false
+    }
+
+    val deploymentTargetSettingName = System.getenv("DEPLOYMENT_TARGET_SETTING_NAME")
+    return !System.getenv(deploymentTargetSettingName).isNullOrBlank()
+}
+
+val swiftExportTaskDirectlyRequested =
+    gradle.startParameter.taskNames.any { it == "embedSwiftExportForXcode" || it.endsWith(":embedSwiftExportForXcode") }
+
+tasks.matching { it.name == "embedSwiftExportForXcode" }.configureEach {
+    onlyIf {
+        val hasXcodeEnvironment = hasXcodeSwiftExportEnvironment()
+        if (!hasXcodeEnvironment && !swiftExportTaskDirectlyRequested) {
+            logger.lifecycle("embedSwiftExportForXcode: skipped because Xcode environment variables are not present")
+        }
+        hasXcodeEnvironment || swiftExportTaskDirectlyRequested
+    }
+}
+
+tasks.named("build") {
+    dependsOn(fullTargetBuildTaskNames)
+    dependsOn(publicationExportTaskNames)
+}
+
+afterEvaluate {
+    tasks.named("build") {
+        dependsOn(
+            tasks.matching {
+                name.endsWith("MainClasses") ||
+                    name.endsWith("TestClasses") ||
+                    name.endsWith("Binaries") ||
+                    name.endsWith("XCFramework") ||
+                    name == "embedSwiftExportForXcode" ||
+                    name.startsWith("exportCommonSourceSetsMetadataLocationsFor") ||
+                    name.startsWith("exportRootPublicationCoordinatesFor") ||
+                    name.startsWith("exportCrossCompilationMetadataFor") ||
+                    name.startsWith("exportTargetPublicationCoordinatesFor")
+            },
+        )
+    }
 }
 
 // The generated Wasm-WASI Node test runner cannot see the filesystem unless
