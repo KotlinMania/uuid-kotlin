@@ -1,5 +1,9 @@
 // port-lint: source lib.rs
+@file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
+
 package io.github.kotlinmania.uuid
+
+import kotlin.native.HiddenFromObjC
 
 /**
  * The version of the UUID, denoting the generating algorithm.
@@ -345,11 +349,13 @@ public class Uuid private constructor(
         /**
          * Parses a UUID from a string of hexadecimal digits with optional hyphens.
          */
+        @HiddenFromObjC
         public fun tryParse(input: String): Result<Uuid> = tryParseAscii(input.encodeToByteArray())
 
         /**
          * Parses a UUID from ASCII bytes containing hexadecimal digits with optional hyphens.
          */
+        @HiddenFromObjC
         public fun tryParseAscii(input: ByteArray): Result<Uuid> =
             parseUuidBytes(input).fold(
                 onSuccess = { Result.success(fromBytes(it)) },
@@ -394,6 +400,7 @@ public class Uuid private constructor(
         /**
          * Creates a UUID from a byte slice.
          */
+        @HiddenFromObjC
         public fun fromSlice(bytes: ByteArray): Result<Uuid> =
             if (bytes.size == UUID_LENGTH) {
                 Result.success(fromBytes(bytes))
