@@ -1,35 +1,57 @@
 import XCTest
 import Uuid
+import ExportedKotlinPackages
 
-// Smoke test for the Kotlin → Swift Export → SPM → swift test pipeline.
+// Swift Export bridge verification for the Kotlin → Swift Export → SPM →
+// swift test pipeline. The smoke test (`testSwiftModuleLoads`) proves the
+// swiftmodule, static archive, and SPM wiring are correct; the additional
+// tests below exercise specific Kotlin entry points through the Swift
+// bridge so a per-API regression in the bridge cannot pass silently.
 //
-// The file's mere existence and successful compilation prove three layers
-// of the pipeline:
-//
-//   1. `embedSwiftExportForXcode` produced `Uuid.swiftmodule/`
-//      and the supporting KotlinRuntimeSupport / ExportedKotlinPackages /
-//      KotlinRuntime swiftmodule bundles. If any of them were missing,
-//      `import Uuid` above would fail at compile time.
-//
-//   2. The static archive `libUuid.a` (produced by the
-//      `linkSwiftExportBinaryDebugStaticMacosArm64` and
-//      `mergeMacosDebugSwiftExportLibraries` tasks) supplied every
-//      `__root____*` and `KotlinError`-related symbol the Swift modules
-//      reference. If the archive were missing or empty, this test
-//      executable would fail to link with "undefined symbols for
-//      architecture arm64".
-//
-//   3. The Kotlin `swiftExport { moduleName = "Uuid" }` and
-//      `flattenPackage = "io.github.kotlinmania.uuid"` configuration in
-//      build.gradle.kts produced a module name that's both syntactically
-//      valid as a Swift identifier and reachable from this Package.swift
-//      via the `UuidLibrary` product.
-//
-// Add more meaningful per-API tests below as the Swift Export surface
-// grows. For now the import + a single passing assertion is the
-// canary that the pipeline is green for this repo.
+// Swift accesses Kotlin companion objects as `Type.Companion.shared.member`
+// per SWIFT_EXPORT_ROLLOUT.md gap #5. The bridge typealiases the Kotlin
+// classes into the top-level Uuid Swift module, but the type ambiguity
+// between the module name `Uuid` and the typealias `Uuid` forces every
+// reference to disambiguate via the `ExportedKotlinPackages` namespace.
+typealias KotlinUuid = ExportedKotlinPackages.io.github.kotlinmania.uuid.Uuid
+typealias KotlinNonNilUuid = ExportedKotlinPackages.io.github.kotlinmania.uuid.NonNilUuid
+
 final class UuidExportTests: XCTestCase {
+
     func testSwiftModuleLoads() throws {
         XCTAssertTrue(true, "Uuid swift module imported cleanly")
+    }
+
+    func testNilUuid() throws {
+        let nilUuid = KotlinUuid.Companion.shared.`nil`()
+        XCTAssertTrue(nilUuid.isNil())
+        XCTAssertFalse(nilUuid.isMax())
+        XCTAssertEqual(nilUuid.toString(), "00000000-0000-0000-0000-000000000000")
+    }
+
+    func testMaxUuid() throws {
+        let maxUuid = KotlinUuid.Companion.shared.max()
+        XCTAssertTrue(maxUuid.isMax())
+        XCTAssertFalse(maxUuid.isNil())
+        XCTAssertEqual(maxUuid.toString(), "ffffffff-ffff-ffff-ffff-ffffffffffff")
+    }
+
+    func testParseHyphenated() throws {
+        let parsed = KotlinUuid.Companion.shared.parseStr(input: "550e8400-e29b-41d4-a716-446655440000")
+        XCTAssertFalse(parsed.isNil())
+        XCTAssertEqual(parsed.toString(), "550e8400-e29b-41d4-a716-446655440000")
+    }
+
+    func testNonNilUuidRejectsNil() throws {
+        let nilUuid = KotlinUuid.Companion.shared.`nil`()
+        let nonNilFromNil = KotlinNonNilUuid.Companion.shared.new(uuid: nilUuid)
+        XCTAssertNil(nonNilFromNil)
+    }
+
+    func testNonNilUuidAcceptsRealUuid() throws {
+        let uuid = KotlinUuid.Companion.shared.parseStr(input: "550e8400-e29b-41d4-a716-446655440000")
+        let nonNil = KotlinNonNilUuid.Companion.shared.new(uuid: uuid)
+        XCTAssertNotNil(nonNil)
+        XCTAssertEqual(nonNil?.toString(), "550e8400-e29b-41d4-a716-446655440000")
     }
 }
