@@ -209,10 +209,18 @@ kotlin {
         binaries.framework { baseName = "Uuid"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "Uuid"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Uuid"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "Uuid"; xcf.add(this) }
+        binaries.framework {
+            baseName = "Uuid"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
