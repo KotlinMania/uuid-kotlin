@@ -28,7 +28,7 @@ plugins {
 }
 
 group = "io.github.kotlinmania"
-version = "0.1.0"
+version = "0.1.1"
 
 val androidCommandLineToolsRevision = "14742923"
 val projectCompileSdk = "34"
@@ -669,4 +669,63 @@ val patchWasmWasiNodePreopens = tasks.register("patchWasmWasiNodePreopens") {
 
 tasks.named("wasmWasiNodeTest") {
     dependsOn(patchWasmWasiNodePreopens)
+}
+
+// Local Swift Export verification: build the Kotlin → Swift Export → SPM
+// bridge with the Xcode-style environment variables the plugin expects, then
+// run `swift test` against the freshly produced module. Failing here fails
+// the local Gradle build — we do not wait for GitHub Actions to surface
+// Swift-side breakage. The .github/workflows/swift.yml workflow runs the
+// same two commands; this Gradle task is the local mirror.
+val isMacHost = System.getProperty("os.name").lowercase().contains("mac")
+val swiftTestEnvOverrides = mapOf(
+    "BUILT_PRODUCTS_DIR" to layout.buildDirectory.dir("swift-test").get().asFile.absolutePath,
+    "TARGET_BUILD_DIR" to layout.buildDirectory.dir("swift-test").get().asFile.absolutePath,
+    "SDK_NAME" to "macosx",
+    "CONFIGURATION" to "Debug",
+    "ARCHS" to "arm64",
+    "FRAMEWORKS_FOLDER_PATH" to "Frameworks",
+    "MACOSX_DEPLOYMENT_TARGET" to "14.0",
+    "DEPLOYMENT_TARGET_SETTING_NAME" to "MACOSX_DEPLOYMENT_TARGET",
+)
+
+val swiftExportLocal = tasks.register("swiftExportLocal") {
+    description = "Run embedSwiftExportForXcode locally with Xcode-style env vars populated."
+    group = "verification"
+    onlyIf { isMacHost }
+    outputs.upToDateWhen { false }
+
+    val execOps = serviceOf<ExecOperations>()
+    val projectRoot = layout.projectDirectory.asFile
+    val gradlewBinary = projectRoot.resolve(if (isWindowsHost) "gradlew.bat" else "gradlew")
+
+    doLast {
+        execOps.exec {
+            workingDir = projectRoot
+            commandLine(gradlewBinary.absolutePath, "embedSwiftExportForXcode", "--no-configuration-cache", "--no-daemon")
+            environment(swiftTestEnvOverrides)
+        }
+    }
+}
+
+val swiftTest = tasks.register("swiftTest") {
+    description = "Build the Swift Export bridge and run `swift test` against the Kotlin-exported module."
+    group = "verification"
+    onlyIf { isMacHost }
+    dependsOn(swiftExportLocal)
+    outputs.upToDateWhen { false }
+
+    val execOps = serviceOf<ExecOperations>()
+    val harnessDir = layout.projectDirectory.dir("swift-test-harness").asFile
+
+    doLast {
+        execOps.exec {
+            workingDir = harnessDir
+            commandLine("swift", "test")
+        }
+    }
+}
+
+tasks.named("build") {
+    dependsOn(swiftTest)
 }
