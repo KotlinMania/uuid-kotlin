@@ -1,5 +1,9 @@
 // port-lint: source fmt.rs
+@file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
+
 package io.github.kotlinmania.uuid
+
+import kotlin.native.HiddenFromObjC
 
 /**
  * Format a [Uuid] as a hyphenated string, like
@@ -36,6 +40,7 @@ public class Hyphenated internal constructor(
         /**
          * Parses a hyphenated UUID formatter.
          */
+        @HiddenFromObjC
         public fun parse(input: String): Result<Hyphenated> =
             parseHyphenated(input.encodeToByteArray()).map { Hyphenated(Uuid.fromBytes(it)) }
     }
@@ -76,6 +81,7 @@ public class Simple internal constructor(
         /**
          * Parses a simple UUID formatter.
          */
+        @HiddenFromObjC
         public fun parse(input: String): Result<Simple> =
             parseSimple(input.encodeToByteArray()).map { Simple(Uuid.fromBytes(it)) }
     }
@@ -116,6 +122,7 @@ public class Urn internal constructor(
         /**
          * Parses a URN UUID formatter.
          */
+        @HiddenFromObjC
         public fun parse(input: String): Result<Urn> =
             parseUrn(input.encodeToByteArray()).map { Urn(Uuid.fromBytes(it)) }
     }
@@ -156,6 +163,7 @@ public class Braced internal constructor(
         /**
          * Parses a braced UUID formatter.
          */
+        @HiddenFromObjC
         public fun parse(input: String): Result<Braced> =
             parseBraced(input.encodeToByteArray()).map { Braced(Uuid.fromBytes(it)) }
     }

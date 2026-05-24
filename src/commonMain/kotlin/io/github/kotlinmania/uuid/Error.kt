@@ -1,9 +1,14 @@
 // port-lint: source error.rs
+@file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
+
 package io.github.kotlinmania.uuid
+
+import kotlin.native.HiddenFromObjC
 
 /**
  * A general error that can occur when working with UUIDs.
  */
+@HiddenFromObjC
 public class Error internal constructor(
     internal val kind: ErrorKind,
 ) : Exception() {
@@ -109,6 +114,7 @@ internal sealed interface ErrorKind {
  * cannot be parsed but offering no error details. To get details, use
  * [InvalidUuid.intoErr].
  */
+@HiddenFromObjC
 public class InvalidUuid internal constructor(
     private val bytes: ByteArray,
 ) : Exception() {
