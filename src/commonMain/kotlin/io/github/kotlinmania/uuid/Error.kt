@@ -6,7 +6,7 @@ package io.github.kotlinmania.uuid
  */
 public class Error internal constructor(
     internal val kind: ErrorKind,
-) {
+) : Exception() {
     override fun equals(other: Any?): Boolean = other is Error && kind == other.kind
 
     override fun hashCode(): Int = kind.hashCode()
@@ -111,7 +111,7 @@ internal sealed interface ErrorKind {
  */
 public class InvalidUuid internal constructor(
     private val bytes: ByteArray,
-) {
+) : Exception() {
     /**
      * Converts the lightweight error type into detailed diagnostics.
      */
