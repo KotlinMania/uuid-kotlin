@@ -21,10 +21,22 @@ class NonNilTest {
         val uuid =
             Uuid.fromBytes(
                 byteArrayOf(
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
                 ),
             )
 
@@ -41,10 +53,22 @@ class NonNilTest {
         val uuid =
             Uuid.fromBytes(
                 byteArrayOf(
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
                 ),
             )
         val nonNil = NonNilUuid.tryFrom(uuid).getOrThrow()
@@ -58,19 +82,43 @@ class NonNilTest {
         val uuid1 =
             Uuid.fromBytes(
                 byteArrayOf(
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
                 ),
             )
         val uuid2 =
             Uuid.fromBytes(
                 byteArrayOf(
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xf0.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xf0.toByte(),
                 ),
             )
 
@@ -109,10 +157,22 @@ class NonNilTest {
         val uuid =
             Uuid.fromBytes(
                 byteArrayOf(
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
-                    0x01, 0x23, 0x45, 0x67,
-                    0x89.toByte(), 0xab.toByte(), 0xcd.toByte(), 0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
+                    0x01,
+                    0x23,
+                    0x45,
+                    0x67,
+                    0x89.toByte(),
+                    0xab.toByte(),
+                    0xcd.toByte(),
+                    0xef.toByte(),
                 ),
             )
 

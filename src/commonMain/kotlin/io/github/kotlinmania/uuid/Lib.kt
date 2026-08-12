@@ -8,7 +8,9 @@ import kotlin.native.HiddenFromObjC
 /**
  * The version of the UUID, denoting the generating algorithm.
  */
-public enum class Version(public val number: Int) {
+public enum class Version(
+    public val number: Int,
+) {
     /**
      * The nil, all-zero UUID.
      */
