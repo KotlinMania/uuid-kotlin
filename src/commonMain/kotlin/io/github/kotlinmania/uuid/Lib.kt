@@ -130,6 +130,40 @@ public class Uuid private constructor(
         }
 
     /**
+     * If the UUID is the correct version (v1, v6, or v7) this will return the
+     * timestamp and counter used to create it. For other versions, or if the timestamp
+     * cannot be decoded, this will return null.
+     */
+    public fun getTimestamp(): Timestamp? =
+        when (getVersion()) {
+            Version.Mac -> {
+                val (ticks, counter) = decodeGregorianTimestamp(this)
+                Timestamp.fromGregorian(ticks, counter)
+            }
+            Version.SortMac -> {
+                val (ticks, counter) = decodeSortedGregorianTimestamp(this)
+                Timestamp.fromGregorian(ticks, counter)
+            }
+            Version.SortRand -> {
+                val millis = decodeUnixTimestampMillis(this)
+                val seconds = millis / 1000uL
+                val nanos = ((millis % 1000uL) * 1_000_000uL).toUInt()
+                Timestamp.fromUnixTime(seconds, nanos, 0uL, 0u)
+            }
+            else -> null
+        }
+
+    /**
+     * If the UUID is the correct version (v1 or v6) this will return the
+     * node value as a 6-byte array. For other versions this will return null.
+     */
+    public fun getNodeId(): ByteArray? =
+        when (getVersion()) {
+            Version.Mac, Version.SortMac -> bytes.copyOfRange(10, 16)
+            else -> null
+        }
+
+    /**
      * Returns the four field values of the UUID.
      */
     public fun asFields(): UuidFields {
