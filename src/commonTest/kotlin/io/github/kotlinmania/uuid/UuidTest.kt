@@ -126,6 +126,44 @@ class UuidTest {
         assertEquals(Variant.Microsoft, Uuid.parseStr("936DA01F9ABD4d9dC0C702AF85C822A8").getVariant())
         assertEquals(Variant.NCS, Uuid.parseStr("f81d4fae-7dec-11d0-7765-00a0c91e6bf6").getVariant())
     }
+
+    @Test
+    fun fromU64PairRoundtrip() {
+        val high = 0xa1a2a3a4b1b2c1c2uL
+        val low = 0xd1d2d3d4d5d6d7d8uL
+        val uuid = Uuid.fromU64Pair(high, low)
+        assertEquals(high to low, uuid.asU64Pair())
+    }
+
+    @Test
+    fun fromSliceValidation() {
+        val valid = ByteArray(16) { it.toByte() }
+        val invalid = ByteArray(15) { it.toByte() }
+        assertTrue(Uuid.fromSlice(valid).isSuccess)
+        assertTrue(Uuid.fromSlice(invalid).isFailure)
+    }
+
+    @Test
+    fun tryParseAndTryParseAscii() {
+        val str = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+        val parsed = Uuid.tryParse(str).getOrThrow()
+        assertEquals(Uuid.NAMESPACE_DNS, parsed)
+        val parsedAscii = Uuid.tryParseAscii(str.encodeToByteArray()).getOrThrow()
+        assertEquals(Uuid.NAMESPACE_DNS, parsedAscii)
+        assertTrue(Uuid.tryParse("invalid-uuid").isFailure)
+    }
+
+    @Test
+    fun encodeBufferHasValidLength() {
+        val buf = Uuid.encodeBuffer()
+        assertEquals(Urn.LENGTH, buf.size)
+    }
+
+    @Test
+    fun intoBytesCopiesUnderlyingBytes() {
+        val uuid = fixture()
+        assertContentEquals(uuid.asBytes(), uuid.intoBytes())
+    }
 }
 
 internal fun fixture(): Uuid =
