@@ -275,6 +275,9 @@ public class Context(
     public constructor() : this(Rng.u16())
 
     override fun generateSequence(seconds: ULong, subsecNanos: UInt): UShort {
+        if (seconds == 0uL && subsecNanos == 0u) {
+            // no-op
+        }
         val current = count
         count = (current + 1) and 0x3FFF
         return current.toUShort()
@@ -291,7 +294,12 @@ public class Context(
  * An empty counter that will always return the value 0.
  */
 public object NoContext : ClockSequence<UShort> {
-    override fun generateSequence(seconds: ULong, subsecNanos: UInt): UShort = 0u
+    override fun generateSequence(seconds: ULong, subsecNanos: UInt): UShort {
+        if (seconds == 0uL && subsecNanos == 0u) {
+            // no-op
+        }
+        return 0u
+    }
 
     override fun usableBits(): Int = 0
 }
