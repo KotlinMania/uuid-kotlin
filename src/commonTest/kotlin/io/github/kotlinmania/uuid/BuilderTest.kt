@@ -79,4 +79,33 @@ class BuilderTest {
         assertEquals(Version.Random, uuid.getVersion())
         assertEquals(Variant.RFC4122, uuid.getVariant())
     }
+
+    @Test
+    fun testMax() {
+        val uuid = Builder.max().intoUuid()
+        assertEquals("ffffffff-ffff-ffff-ffff-ffffffffffff", uuid.hyphenated().toString())
+        assertEquals(Version.Max, uuid.getVersion())
+    }
+
+    @Test
+    fun testFromU64Pair() {
+        val high = 0xa1a2a3a4b1b2c1c2uL
+        val low = 0xd1d2d3d4d5d6d7d8uL
+        val uuid = Builder.fromU64Pair(high, low).intoUuid()
+        assertEquals("a1a2a3a4-b1b2-c1c2-d1d2-d3d4d5d6d7d8", uuid.hyphenated().toString())
+    }
+
+    @Test
+    fun testFromRfc4122Timestamp() {
+        val nodeId = byteArrayOf(1, 2, 3, 4, 5, 6)
+        val uuid = Builder.fromRfc4122Timestamp(0x12345678uL, 0x9abcu, nodeId).intoUuid()
+        assertEquals(Version.Mac, uuid.getVersion())
+    }
+
+    @Test
+    fun testFromSortedRfc4122Timestamp() {
+        val nodeId = byteArrayOf(1, 2, 3, 4, 5, 6)
+        val uuid = Builder.fromSortedRfc4122Timestamp(0x12345678uL, 0x9abcu, nodeId).intoUuid()
+        assertEquals(Version.SortMac, uuid.getVersion())
+    }
 }
