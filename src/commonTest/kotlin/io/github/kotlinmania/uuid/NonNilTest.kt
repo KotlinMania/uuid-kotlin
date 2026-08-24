@@ -1,4 +1,4 @@
-// port-lint: source non_nil.rs
+// port-lint: tests non_nil.rs
 package io.github.kotlinmania.uuid
 
 import kotlin.test.Test

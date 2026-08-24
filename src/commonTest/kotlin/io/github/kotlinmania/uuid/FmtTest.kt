@@ -1,3 +1,4 @@
+// port-lint: tests fmt.rs
 package io.github.kotlinmania.uuid
 
 import kotlin.test.Test

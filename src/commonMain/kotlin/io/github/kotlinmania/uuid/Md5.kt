@@ -2,16 +2,78 @@
 package io.github.kotlinmania.uuid
 
 internal object Md5 {
-    private val S = intArrayOf(
-        7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
-        5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
-        4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-        6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
-    )
+    private val S =
+        intArrayOf(
+            7,
+            12,
+            17,
+            22,
+            7,
+            12,
+            17,
+            22,
+            7,
+            12,
+            17,
+            22,
+            7,
+            12,
+            17,
+            22,
+            5,
+            9,
+            14,
+            20,
+            5,
+            9,
+            14,
+            20,
+            5,
+            9,
+            14,
+            20,
+            5,
+            9,
+            14,
+            20,
+            4,
+            11,
+            16,
+            23,
+            4,
+            11,
+            16,
+            23,
+            4,
+            11,
+            16,
+            23,
+            4,
+            11,
+            16,
+            23,
+            6,
+            10,
+            15,
+            21,
+            6,
+            10,
+            15,
+            21,
+            6,
+            10,
+            15,
+            21,
+            6,
+            10,
+            15,
+            21,
+        )
 
-    private val K = UIntArray(64) { i ->
-        (kotlin.math.floor(kotlin.math.abs(kotlin.math.sin(i + 1.0)) * 4294967296.0).toLong() and 0xFFFFFFFFL).toUInt()
-    }
+    private val K =
+        UIntArray(64) { i ->
+            (kotlin.math.floor(kotlin.math.abs(kotlin.math.sin(i + 1.0)) * 4294967296.0).toLong() and 0xFFFFFFFFL).toUInt()
+        }
 
     fun hash(ns: ByteArray, src: ByteArray): ByteArray {
         val totalLen = ns.size + src.size
