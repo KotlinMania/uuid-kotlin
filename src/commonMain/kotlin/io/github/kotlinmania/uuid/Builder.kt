@@ -159,5 +159,28 @@ public class Builder(
          * Creates a `Builder` with an initial `Uuid.nil()`.
          */
         public fun nil(): Builder = Builder(Uuid.nil())
+
+        /**
+         * Creates a `Builder` with an initial `Uuid.max()`.
+         */
+        public fun max(): Builder = Builder(Uuid.max())
+
+        /**
+         * Creates a `Builder` from two 64-bit values.
+         */
+        public fun fromU64Pair(high: ULong, low: ULong): Builder =
+            Builder(Uuid.fromU64Pair(high, low))
+
+        /**
+         * Creates a `Builder` for a version 1 UUID using the supplied timestamp, counter, and node ID.
+         */
+        public fun fromRfc4122Timestamp(ticks: ULong, counter: UShort, nodeId: ByteArray): Builder =
+            fromGregorianTimestamp(ticks, counter, nodeId)
+
+        /**
+         * Creates a `Builder` for a version 6 UUID using the supplied timestamp, counter, and node ID.
+         */
+        public fun fromSortedRfc4122Timestamp(ticks: ULong, counter: UShort, nodeId: ByteArray): Builder =
+            fromSortedGregorianTimestamp(ticks, counter, nodeId)
     }
 }
