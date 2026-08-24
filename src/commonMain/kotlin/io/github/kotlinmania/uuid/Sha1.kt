@@ -28,10 +28,13 @@ internal object Sha1 {
         for (chunkOffset in 0 until buffer.size step 64) {
             for (i in 0 until 16) {
                 val byteOffset = chunkOffset + i * 4
-                w[i] = (((buffer[byteOffset].toInt() and 0xFF) shl 24) or
-                    ((buffer[byteOffset + 1].toInt() and 0xFF) shl 16) or
-                    ((buffer[byteOffset + 2].toInt() and 0xFF) shl 8) or
-                    (buffer[byteOffset + 3].toInt() and 0xFF)).toUInt()
+                w[i] =
+                    (
+                        ((buffer[byteOffset].toInt() and 0xFF) shl 24) or
+                            ((buffer[byteOffset + 1].toInt() and 0xFF) shl 16) or
+                            ((buffer[byteOffset + 2].toInt() and 0xFF) shl 8) or
+                            (buffer[byteOffset + 3].toInt() and 0xFF)
+                    ).toUInt()
             }
 
             for (i in 16 until 80) {

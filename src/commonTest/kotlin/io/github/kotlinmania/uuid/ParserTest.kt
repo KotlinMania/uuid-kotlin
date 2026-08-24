@@ -1,3 +1,4 @@
+// port-lint: tests parser.rs
 package io.github.kotlinmania.uuid
 
 import kotlin.test.Test
