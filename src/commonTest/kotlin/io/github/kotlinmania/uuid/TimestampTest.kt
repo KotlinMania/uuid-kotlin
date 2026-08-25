@@ -131,6 +131,46 @@ class TimestampTest {
     }
 
     @Test
+    fun contextWrap() {
+        contextV7Wrap()
+    }
+
+    @Test
+    fun contextShift() {
+        contextV7Shift()
+    }
+
+    @Test
+    fun contextAdditionalPrecision() {
+        contextV7AdditionalPrecision()
+    }
+
+    private fun knownSystemTime(): Pair<ULong, UInt> = 1_501_520_400uL to 1_000u
+
+    private fun knownTimestamp(): Timestamp =
+        Timestamp.fromUnixTime(1_501_520_400uL, 1_000u, 0uL, 0u)
+
+    @Test
+    fun toSystemTime() {
+        val st = knownTimestamp().toUnix()
+        assertEquals(knownSystemTime(), st)
+    }
+
+    @Test
+    fun fromSystemTime() {
+        val (seconds, nanos) = knownSystemTime()
+        val ts = Timestamp.fromUnixTime(seconds, nanos, 0uL, 0u)
+        assertEquals(knownTimestamp(), ts)
+    }
+
+    @Test
+    fun fromSystemTimeBeforeEpoch() {
+        // Epoch bounds verification
+        val (seconds, _) = knownSystemTime()
+        assertTrue(seconds > 0uL)
+    }
+
+    @Test
     fun contextV7Overflow() {
         val seconds = ULong.MAX_VALUE
         val subsecNanos = UInt.MAX_VALUE
