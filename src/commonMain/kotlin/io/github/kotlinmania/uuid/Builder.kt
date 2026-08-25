@@ -178,6 +178,21 @@ public class Builder(
             fromGregorianTimestamp(ticks, counter, nodeId)
 
         /**
+         * Creates a `Builder` from a 128-bit value (high and low 64-bit words).
+         */
+        public fun fromU128(high: ULong, low: ULong): Builder = Builder(Uuid.fromU128(high, low))
+
+        /**
+         * Creates a `Builder` from a 128-bit value in little-endian order.
+         */
+        public fun fromU128Le(high: ULong, low: ULong): Builder = Builder(Uuid.fromU128Le(high, low))
+
+        /**
+         * Creates a `Builder` using the supplied bytes reference.
+         */
+        public fun fromBytesRef(b: ByteArray): Builder = fromBytes(b)
+
+        /**
          * Creates a `Builder` for a version 6 UUID using the supplied timestamp, counter, and node ID.
          */
         public fun fromSortedRfc4122Timestamp(ticks: ULong, counter: UShort, nodeId: ByteArray): Builder =

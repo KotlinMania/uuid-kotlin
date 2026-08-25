@@ -8,7 +8,21 @@ import kotlin.test.assertTrue
 
 class TimestampTest {
     @Test
-    fun testContext() {
+    fun gregorianUnixDoesNotPanic() {
+        Timestamp.unixToGregorianTicks(ULong.MAX_VALUE, 0u)
+        Timestamp.unixToGregorianTicks(0uL, UInt.MAX_VALUE)
+        Timestamp.unixToGregorianTicks(ULong.MAX_VALUE, UInt.MAX_VALUE)
+        Timestamp.gregorianToUnix(ULong.MAX_VALUE)
+    }
+
+    @Test
+    fun toGregorianTruncatesToUsableBits() {
+        val ts = Timestamp.fromGregorian(123uL, UShort.MAX_VALUE)
+        assertEquals(123uL to (UShort.MAX_VALUE.toInt() ushr 2).toUShort(), ts.toGregorian())
+    }
+
+    @Test
+    fun context() {
         val seconds = 1_496_854_535uL
         val subsecNanos = 812_946_000u
 
@@ -28,7 +42,7 @@ class TimestampTest {
     }
 
     @Test
-    fun testContextOverflow() {
+    fun contextOverflow() {
         val seconds = ULong.MAX_VALUE
         val subsecNanos = UInt.MAX_VALUE
 
@@ -37,7 +51,7 @@ class TimestampTest {
     }
 
     @Test
-    fun testContextV7() {
+    fun contextV7() {
         val seconds = 1_496_854_535uL
         val subsecNanos = 812_946_000u
 
@@ -63,7 +77,7 @@ class TimestampTest {
     }
 
     @Test
-    fun testContextV7Wrap() {
+    fun contextV7Wrap() {
         val seconds = 1_496_854_535uL
         val subsecNanos = 812_946_000u
 
@@ -87,7 +101,7 @@ class TimestampTest {
     }
 
     @Test
-    fun testContextV7Shift() {
+    fun contextV7Shift() {
         val seconds = 1_496_854_535uL
         val subsecNanos = 812_946_000u
 
@@ -98,7 +112,7 @@ class TimestampTest {
     }
 
     @Test
-    fun testContextV7AdditionalPrecision() {
+    fun contextV7AdditionalPrecision() {
         val seconds = 1_496_854_535uL
         val subsecNanos = 812_946_000u
 
@@ -117,7 +131,7 @@ class TimestampTest {
     }
 
     @Test
-    fun testContextV7Overflow() {
+    fun contextV7Overflow() {
         val seconds = ULong.MAX_VALUE
         val subsecNanos = UInt.MAX_VALUE
 
@@ -130,19 +144,5 @@ class TimestampTest {
         for (context in contexts) {
             Timestamp.fromUnix(context, seconds, subsecNanos)
         }
-    }
-
-    @Test
-    fun testGregorianUnixDoesNotPanic() {
-        Timestamp.unixToGregorianTicks(ULong.MAX_VALUE, 0u)
-        Timestamp.unixToGregorianTicks(0uL, UInt.MAX_VALUE)
-        Timestamp.unixToGregorianTicks(ULong.MAX_VALUE, UInt.MAX_VALUE)
-        Timestamp.gregorianToUnix(ULong.MAX_VALUE)
-    }
-
-    @Test
-    fun testToGregorianTruncatesToUsableBits() {
-        val ts = Timestamp.fromGregorian(123uL, UShort.MAX_VALUE)
-        assertEquals(123uL to (UShort.MAX_VALUE.toInt() ushr 2).toUShort(), ts.toGregorian())
     }
 }

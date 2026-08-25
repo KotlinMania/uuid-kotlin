@@ -202,6 +202,20 @@ public class Uuid private constructor(
         readU64(0) to readU64(8)
 
     /**
+     * Returns the 128-bit integer value in big-endian order as a (high, low) 64-bit word pair.
+     */
+    public fun asU128(): Pair<ULong, ULong> = asU64Pair()
+
+    /**
+     * Returns the 128-bit integer value in little-endian order as a (high, low) 64-bit word pair.
+     */
+    public fun toU128Le(): Pair<ULong, ULong> {
+        val low = readU64Le(bytes, 0)
+        val high = readU64Le(bytes, 8)
+        return high to low
+    }
+
+    /**
      * Returns a copy of the 16 octets containing the UUID value.
      */
     public fun asBytes(): ByteArray = bytes.copyOf()
@@ -266,6 +280,14 @@ public class Uuid private constructor(
         var value = 0UL
         for (i in 0 until 8) {
             value = (value shl 8) or (bytes[offset + i].toInt() and 0xff).toULong()
+        }
+        return value
+    }
+
+    private fun readU64Le(data: ByteArray, offset: Int): ULong {
+        var value = 0UL
+        for (i in 7 downTo 0) {
+            value = (value shl 8) or (data[offset + i].toInt() and 0xff).toULong()
         }
         return value
     }
@@ -503,6 +525,21 @@ public class Uuid private constructor(
         }
 
         /**
+         * Creates a UUID from a 128-bit value (high and low 64-bit words).
+         */
+        public fun fromU128(high: ULong, low: ULong): Uuid = fromU64Pair(high, low)
+
+        /**
+         * Creates a UUID from a 128-bit value in little-endian order.
+         */
+        public fun fromU128Le(high: ULong, low: ULong): Uuid {
+            val out = ByteArray(UUID_LENGTH)
+            writeU64Le(out, 0, low)
+            writeU64Le(out, 8, high)
+            return fromBytes(out)
+        }
+
+        /**
          * Returns the nil UUID.
          */
         public fun nil(): Uuid = fromBytes(ByteArray(UUID_LENGTH))
@@ -524,6 +561,17 @@ public class Uuid private constructor(
         ) {
             for (i in 0 until 8) {
                 val shift = (7 - i) * 8
+                target[offset + i] = ((value shr shift) and 0xffu).toByte()
+            }
+        }
+
+        private fun writeU64Le(
+            target: ByteArray,
+            offset: Int,
+            value: ULong,
+        ) {
+            for (i in 0 until 8) {
+                val shift = i * 8
                 target[offset + i] = ((value shr shift) and 0xffu).toByte()
             }
         }
