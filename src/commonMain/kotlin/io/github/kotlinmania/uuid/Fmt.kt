@@ -38,6 +38,17 @@ public class Hyphenated internal constructor(
         public fun fromUuid(uuid: Uuid): Hyphenated = Hyphenated(uuid)
 
         /**
+         * Creates a [Hyphenated] formatter from a [Uuid].
+         */
+        public fun from(uuid: Uuid): Hyphenated = Hyphenated(uuid)
+
+        /**
+         * Parses a hyphenated UUID formatter from a string.
+         */
+        @HiddenFromObjC
+        public fun fromStr(input: String): Result<Hyphenated> = parse(input)
+
+        /**
          * Parses a hyphenated UUID formatter.
          */
         @HiddenFromObjC
@@ -77,6 +88,17 @@ public class Simple internal constructor(
          * Creates a [Simple] formatter from a [Uuid].
          */
         public fun fromUuid(uuid: Uuid): Simple = Simple(uuid)
+
+        /**
+         * Creates a [Simple] formatter from a [Uuid].
+         */
+        public fun from(uuid: Uuid): Simple = Simple(uuid)
+
+        /**
+         * Parses a simple UUID formatter from a string.
+         */
+        @HiddenFromObjC
+        public fun fromStr(input: String): Result<Simple> = parse(input)
 
         /**
          * Parses a simple UUID formatter.
@@ -120,6 +142,17 @@ public class Urn internal constructor(
         public fun fromUuid(uuid: Uuid): Urn = Urn(uuid)
 
         /**
+         * Creates a [Urn] formatter from a [Uuid].
+         */
+        public fun from(uuid: Uuid): Urn = Urn(uuid)
+
+        /**
+         * Parses a URN UUID formatter from a string.
+         */
+        @HiddenFromObjC
+        public fun fromStr(input: String): Result<Urn> = parse(input)
+
+        /**
          * Parses a URN UUID formatter.
          */
         @HiddenFromObjC
@@ -159,6 +192,17 @@ public class Braced internal constructor(
          * Creates a [Braced] formatter from a [Uuid].
          */
         public fun fromUuid(uuid: Uuid): Braced = Braced(uuid)
+
+        /**
+         * Creates a [Braced] formatter from a [Uuid].
+         */
+        public fun from(uuid: Uuid): Braced = Braced(uuid)
+
+        /**
+         * Parses a braced UUID formatter from a string.
+         */
+        @HiddenFromObjC
+        public fun fromStr(input: String): Result<Braced> = parse(input)
 
         /**
          * Parses a braced UUID formatter.
@@ -282,3 +326,36 @@ private fun encodeUrn(
     inner.copyInto(buffer, destinationOffset = prefix.size)
     return buffer.decodeToString(0, Urn.LENGTH)
 }
+
+/**
+ * Creates a [Uuid] from a [Hyphenated] formatter.
+ */
+public fun Uuid.Companion.from(hyphenated: Hyphenated): Uuid = hyphenated.intoUuid()
+
+/**
+ * Creates a [Uuid] from a [Simple] formatter.
+ */
+public fun Uuid.Companion.from(simple: Simple): Uuid = simple.intoUuid()
+
+/**
+ * Creates a [Uuid] from a [Urn] formatter.
+ */
+public fun Uuid.Companion.from(urn: Urn): Uuid = urn.intoUuid()
+
+/**
+ * Creates a [Uuid] from a [Braced] formatter.
+ */
+public fun Uuid.Companion.from(braced: Braced): Uuid = braced.intoUuid()
+
+internal fun formatSimple(src: ByteArray, buffer: ByteArray, upper: Boolean = false): String =
+    encodeSimple(src, buffer, upper)
+
+internal fun formatHyphenated(src: ByteArray, buffer: ByteArray, upper: Boolean = false): String =
+    encodeHyphenated(src, buffer, upper)
+
+internal fun formatUrn(src: ByteArray, buffer: ByteArray, upper: Boolean = false): String =
+    encodeUrn(src, buffer, upper)
+
+internal fun formatBraced(src: ByteArray, buffer: ByteArray, upper: Boolean = false): String =
+    encodeBraced(src, buffer, upper)
+

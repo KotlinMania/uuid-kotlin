@@ -60,6 +60,16 @@ internal fun parseHyphenated(input: ByteArray): Result<ByteArray> {
     return Result.success(out)
 }
 
+internal fun tryParse(input: ByteArray): Result<ByteArray> = parseUuidBytes(input)
+
+internal fun tryParseAscii(input: ByteArray): Result<Uuid> = Uuid.tryParseAscii(input)
+
+internal fun fromStr(uuidStr: String): Result<Uuid> = Uuid.tryParse(uuidStr)
+
+internal fun tryFrom(uuidStr: String): Result<Uuid> = Uuid.tryParse(uuidStr)
+
+internal fun parseStr(input: String): Result<Uuid> = runCatching { Uuid.parseStr(input) }
+
 private val URN_PREFIX: ByteArray = "urn:uuid:".encodeToByteArray()
 private const val HYPHEN: Byte = 45
 private const val OPEN_BRACE: Byte = 123

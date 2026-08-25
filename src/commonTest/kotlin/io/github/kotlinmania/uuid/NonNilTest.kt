@@ -9,12 +9,15 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class NonNilTest {
-    // The upstream `test_non_nil_with_option_size` test asserts that
-    // `mem::size_of::<Option<NonNilUuid>>() == mem::size_of::<Uuid>()`. That
-    // relies on Rust's niche layout for `NonZeroU128`, which has no Kotlin
-    // analog: a nullable [NonNilUuid] in Kotlin is always a separate boxed
-    // reference. The size relationship is not portable; it is intentionally
-    // not asserted here.
+    @Test
+    fun testNonNilWithOptionSize() {
+        // Niche optimization in memory layout cannot be directly asserted on Kotlin targets.
+        // We verify that nullable NonNilUuid distinguishes null from non-nil UUID instances.
+        val nonNil: NonNilUuid? = NonNilUuid.new(Uuid.fromU128(0x0123456789abcdefuL, 0x0123456789abcdefuL))
+        assertNotNull(nonNil)
+        val nilOption: NonNilUuid? = NonNilUuid.new(Uuid.nil())
+        assertNull(nilOption)
+    }
 
     @Test
     fun testNonNil() {
