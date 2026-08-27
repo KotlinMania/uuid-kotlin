@@ -1,4 +1,4 @@
-// port-lint: source uuid/src/sha1.rs
+// port-lint: source sha1.rs
 package io.github.kotlinmania.uuid
 
 internal object Sha1 {

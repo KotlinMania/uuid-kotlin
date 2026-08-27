@@ -1,4 +1,4 @@
-// port-lint: source uuid/src/non_nil.rs
+// port-lint: source non_nil.rs
 @file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
 
 package io.github.kotlinmania.uuid
