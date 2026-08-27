@@ -1,4 +1,4 @@
-// port-lint: source uuid/src/v7.rs
+// port-lint: source v7.rs
 package io.github.kotlinmania.uuid
 
 import kotlin.random.Random
