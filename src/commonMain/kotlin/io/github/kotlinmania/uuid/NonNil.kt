@@ -60,16 +60,31 @@ public class NonNilUuid private constructor(
     public fun debug(): String = inner.toString()
 
     /**
+     * Formats the wrapped UUID using its display shape.
+     */
+    public fun fmt(): String = inner.toString()
+
+    /**
      * Compares this non-nil UUID with a plain [Uuid], mirroring upstream
      * `PartialEq<Uuid> for NonNilUuid`.
      */
     public fun equalsUuid(other: Uuid): Boolean = inner == other
 
     /**
+     * Compares equality with another [Uuid].
+     */
+    public fun eq(other: Uuid): Boolean = inner == other
+
+    /**
      * Compares this non-nil UUID with a plain [Uuid] using lexicographic byte
      * order, mirroring upstream `PartialOrd<Uuid> for NonNilUuid`.
      */
     public fun compareToUuid(other: Uuid): Int = inner.compareTo(other)
+
+    /**
+     * Compares ordering with another [Uuid].
+     */
+    public fun partialCmp(other: Uuid): Int = inner.compareTo(other)
 
     public companion object {
         /**
@@ -89,6 +104,12 @@ public class NonNilUuid private constructor(
          * Converts a [NonNilUuid] back into a [Uuid].
          */
         public fun fromNonNil(nonNil: NonNilUuid): Uuid = nonNil.inner
+
+        /**
+         * Attempts to convert a [Uuid] into a [NonNilUuid].
+         */
+        @HiddenFromObjC
+        public fun from(uuid: Uuid): Result<NonNilUuid> = tryFrom(uuid)
 
         /**
          * Attempts to convert a [Uuid] into a [NonNilUuid]. Returns a

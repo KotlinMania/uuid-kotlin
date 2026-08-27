@@ -61,14 +61,15 @@ class V7Test {
         assertEquals(ts.toUnix(), decodedTs.toUnix())
     }
 
+    private class MaxContext : ClockSequence<ULong> {
+        override fun generateSequence(seconds: ULong, subsecNanos: UInt): ULong = ULong.MAX_VALUE
+
+        override fun usableBits(): Int = 64
+    }
+
     @Test
     fun testNewMaxContext() {
-        val maxContext =
-            object : ClockSequence<ULong> {
-                override fun generateSequence(seconds: ULong, subsecNanos: UInt): ULong = ULong.MAX_VALUE
-
-                override fun usableBits(): Int = 64
-            }
+        val maxContext = MaxContext()
 
         val time = 1_496_854_535uL
         val timeFraction = 812_000_000u

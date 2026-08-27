@@ -272,6 +272,21 @@ public class Uuid private constructor(
     override fun equals(other: Any?): Boolean =
         other is Uuid && bytes.contentEquals(other.bytes)
 
+    /**
+     * Compares two UUIDs for equality.
+     */
+    public fun eq(other: Uuid): Boolean = this == other
+
+    /**
+     * Computes the hash code of the UUID.
+     */
+    public fun hash(): Int = hashCode()
+
+    /**
+     * Returns the UUID byte slice.
+     */
+    public fun asRef(): ByteArray = asBytes()
+
     override fun hashCode(): Int = bytes.contentHashCode()
 
     override fun toString(): String = hyphenated().toString()
@@ -293,6 +308,16 @@ public class Uuid private constructor(
     }
 
     public companion object {
+        /**
+         * The nil UUID, with all bits set to zero.
+         */
+        public val NIL: Uuid = fromBytes(ByteArray(16))
+
+        /**
+         * The max UUID, with all bits set to one.
+         */
+        public val MAX: Uuid = fromBytes(ByteArray(16) { 0xFF.toByte() })
+
         /**
          * UUID namespace for Domain Name System.
          */
@@ -419,6 +444,32 @@ public class Uuid private constructor(
                 onSuccess = { Result.success(fromBytes(it)) },
                 onFailure = { Result.failure(Error(ErrorKind.ParseOther)) },
             )
+
+        /**
+         * Returns the default nil UUID.
+         */
+        public fun default(): Uuid = NIL
+
+        /**
+         * Creates a UUID from 16 bytes.
+         */
+        public fun from(bytes: ByteArray): Uuid = fromBytes(bytes)
+
+        /**
+         * Attempts to create a UUID from a byte slice.
+         */
+        @HiddenFromObjC
+        public fun tryFrom(bytes: ByteArray): Result<Uuid> = fromSlice(bytes)
+
+        /**
+         * Constructs a UUID from 16 bytes.
+         */
+        public fun new(bytes: ByteArray): Uuid = fromBytes(bytes)
+
+        /**
+         * Constructs a UUID from two 64-bit unsigned integers.
+         */
+        public fun new2(d1: ULong, d2: ULong): Uuid = fromU64Pair(d1, d2)
 
         /**
          * Creates a UUID from 16 bytes.
@@ -615,3 +666,6 @@ private fun UShort.reverseBytes(): UShort {
     val value = toUInt()
     return (((value and 0x00ffu) shl 8) or ((value and 0xff00u) shr 8)).toUShort()
 }
+
+public typealias Bytes = ByteArray
+
