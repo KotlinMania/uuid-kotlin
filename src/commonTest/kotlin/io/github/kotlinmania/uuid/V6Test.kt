@@ -1,4 +1,4 @@
-// port-lint: tests v6.rs
+// port-lint: tests uuid/src/v6.rs
 package io.github.kotlinmania.uuid
 
 import kotlin.test.Test
