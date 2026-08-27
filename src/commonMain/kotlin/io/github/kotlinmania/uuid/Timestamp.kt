@@ -1,4 +1,4 @@
-// port-lint: source timestamp.rs
+// port-lint: source uuid/src/timestamp.rs
 @file:OptIn(kotlin.time.ExperimentalTime::class)
 
 package io.github.kotlinmania.uuid

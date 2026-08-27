@@ -1,4 +1,4 @@
-// port-lint: source parser.rs
+// port-lint: source uuid/src/parser.rs
 package io.github.kotlinmania.uuid
 
 internal fun parseUuidBytes(input: ByteArray): Result<ByteArray> =
