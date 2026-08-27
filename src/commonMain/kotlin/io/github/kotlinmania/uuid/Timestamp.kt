@@ -26,12 +26,24 @@ public class Timestamp internal constructor(
     public fun toGregorian(): Pair<ULong, UShort> =
         unixToGregorianTicks(seconds, subsecNanos) to (counter.toUShort() and 0x3FFFu)
 
+    /**
+     * Get the value of the timestamp as a Gregorian timestamp (deprecated alias).
+     */
+    @Deprecated("use toGregorian()", ReplaceWith("toGregorian()"))
+    public fun toRfc4122(): Pair<ULong, UShort> = toGregorian()
+
     internal fun counter(): Pair<ULong, UByte> = counter to usableCounterBits
 
     /**
      * Get the value of the timestamp as a Unix timestamp, as used in version 7 UUIDs.
      */
     public fun toUnix(): Pair<ULong, UInt> = seconds to subsecNanos
+
+    /**
+     * Deprecated alias for converting nanoseconds.
+     */
+    @Deprecated("use toUnix()", ReplaceWith("toUnix().second"))
+    public fun toUnixNanos(): UInt = subsecNanos
 
     override fun equals(other: Any?): Boolean =
         other is Timestamp &&
@@ -76,6 +88,12 @@ public class Timestamp internal constructor(
             val (seconds, subsecNanos) = gregorianToUnix(ticks)
             return Timestamp(seconds, subsecNanos, counter.toULong(), 14u)
         }
+
+        /**
+         * Creates a timestamp from RFC4122 ticks and counter (deprecated alias).
+         */
+        @Deprecated("use fromGregorian(ticks, counter)", ReplaceWith("fromGregorian(ticks, counter)"))
+        public fun fromRfc4122(ticks: ULong, counter: UShort): Timestamp = fromGregorian(ticks, counter)
 
         /**
          * Construct a timestamp from a Unix timestamp and up to a 128-bit counter, as used in version 7 UUIDs.
@@ -459,3 +477,27 @@ public class ContextV7(
         }
     }
 }
+
+/**
+ * A wrapper for a context that uses thread-local or shared storage.
+ */
+public class ThreadLocalContext<C : ClockSequence<*>>(
+    private val context: C,
+) : ClockSequence<Any?> {
+    override fun generateSequence(seconds: ULong, subsecNanos: UInt): Any? =
+        context.generateSequence(seconds, subsecNanos)
+
+    override fun generateTimestampSequence(
+        seconds: ULong,
+        subsecNanos: UInt,
+    ): TimestampSequenceResult<Any?> {
+        @Suppress("UNCHECKED_CAST")
+        val res = context.generateTimestampSequence(seconds, subsecNanos) as TimestampSequenceResult<Any?>
+        return res
+    }
+
+    override fun usableBits(): Int = context.usableBits()
+}
+
+public typealias SharedContextV7 = ThreadLocalContext<ContextV7>
+

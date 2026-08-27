@@ -20,6 +20,8 @@ public class Hyphenated internal constructor(
 
     public fun intoUuid(): Uuid = uuid
 
+    public fun fmt(): String = toString()
+
     override fun equals(other: Any?): Boolean = other is Hyphenated && uuid == other.uuid
 
     override fun hashCode(): Int = uuid.hashCode()
@@ -358,4 +360,7 @@ internal fun formatUrn(src: ByteArray, buffer: ByteArray, upper: Boolean = false
 
 internal fun formatBraced(src: ByteArray, buffer: ByteArray, upper: Boolean = false): String =
     encodeBraced(src, buffer, upper)
+
+public typealias Err = Error
+
 
