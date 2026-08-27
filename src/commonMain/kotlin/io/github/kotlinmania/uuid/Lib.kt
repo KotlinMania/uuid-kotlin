@@ -668,4 +668,3 @@ private fun UShort.reverseBytes(): UShort {
 }
 
 public typealias Bytes = ByteArray
-

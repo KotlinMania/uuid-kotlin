@@ -10,7 +10,12 @@ class FmtTest {
     @Test
     fun hyphenatedTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().hyphenated().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .hyphenated()
+                .encodeLower(buf)
+                .length
         assertEquals(Hyphenated.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -18,7 +23,12 @@ class FmtTest {
     @Test
     fun hyphenatedRefTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().asHyphenated().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .asHyphenated()
+                .encodeLower(buf)
+                .length
         assertEquals(Hyphenated.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -26,7 +36,12 @@ class FmtTest {
     @Test
     fun simpleTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().simple().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .simple()
+                .encodeLower(buf)
+                .length
         assertEquals(Simple.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -34,7 +49,12 @@ class FmtTest {
     @Test
     fun simpleRefTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().asSimple().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .asSimple()
+                .encodeLower(buf)
+                .length
         assertEquals(Simple.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -42,7 +62,12 @@ class FmtTest {
     @Test
     fun urnTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().urn().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .urn()
+                .encodeLower(buf)
+                .length
         assertEquals(Urn.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -50,7 +75,12 @@ class FmtTest {
     @Test
     fun urnRefTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().asUrn().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .asUrn()
+                .encodeLower(buf)
+                .length
         assertEquals(Urn.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -58,7 +88,12 @@ class FmtTest {
     @Test
     fun bracedTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().braced().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .braced()
+                .encodeLower(buf)
+                .length
         assertEquals(Braced.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }
@@ -66,7 +101,12 @@ class FmtTest {
     @Test
     fun bracedRefTrailing() {
         val buf = ByteArray(100) { 'x'.code.toByte() }
-        val len = Uuid.nil().asBraced().encodeLower(buf).length
+        val len =
+            Uuid
+                .nil()
+                .asBraced()
+                .encodeLower(buf)
+                .length
         assertEquals(Braced.LENGTH, len)
         assertTrue(buf.drop(len).all { it == 'x'.code.toByte() })
     }

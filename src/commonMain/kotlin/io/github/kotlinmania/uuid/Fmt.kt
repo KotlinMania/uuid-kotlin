@@ -362,5 +362,3 @@ internal fun formatBraced(src: ByteArray, buffer: ByteArray, upper: Boolean = fa
     encodeBraced(src, buffer, upper)
 
 public typealias Err = Error
-
-

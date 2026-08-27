@@ -94,7 +94,8 @@ class UuidTest {
 
         assertEquals(
             nil,
-            Builder.fromBytes(ByteArray(16))
+            Builder
+                .fromBytes(ByteArray(16))
                 .withVersion(Version.Nil)
                 .intoUuid(),
         )
@@ -113,7 +114,8 @@ class UuidTest {
 
         assertEquals(
             max,
-            Builder.fromBytes(ByteArray(16) { 0xff.toByte() })
+            Builder
+                .fromBytes(ByteArray(16) { 0xff.toByte() })
                 .withVersion(Version.Max)
                 .intoUuid(),
         )
@@ -434,10 +436,22 @@ class UuidTest {
     fun testFromSlice() {
         val b =
             byteArrayOf(
-                0xa1.toByte(), 0xa2.toByte(), 0xa3.toByte(), 0xa4.toByte(),
-                0xb1.toByte(), 0xb2.toByte(), 0xc1.toByte(), 0xc2.toByte(),
-                0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(),
-                0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte(),
+                0xa1.toByte(),
+                0xa2.toByte(),
+                0xa3.toByte(),
+                0xa4.toByte(),
+                0xb1.toByte(),
+                0xb2.toByte(),
+                0xc1.toByte(),
+                0xc2.toByte(),
+                0xd1.toByte(),
+                0xd2.toByte(),
+                0xd3.toByte(),
+                0xd4.toByte(),
+                0xd5.toByte(),
+                0xd6.toByte(),
+                0xd7.toByte(),
+                0xd8.toByte(),
             )
 
         val u = Uuid.fromSlice(b).getOrThrow()
@@ -450,10 +464,22 @@ class UuidTest {
     fun testFromBytes() {
         val b =
             byteArrayOf(
-                0xa1.toByte(), 0xa2.toByte(), 0xa3.toByte(), 0xa4.toByte(),
-                0xb1.toByte(), 0xb2.toByte(), 0xc1.toByte(), 0xc2.toByte(),
-                0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(),
-                0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte(),
+                0xa1.toByte(),
+                0xa2.toByte(),
+                0xa3.toByte(),
+                0xa4.toByte(),
+                0xb1.toByte(),
+                0xb2.toByte(),
+                0xc1.toByte(),
+                0xc2.toByte(),
+                0xd1.toByte(),
+                0xd2.toByte(),
+                0xd3.toByte(),
+                0xd4.toByte(),
+                0xd5.toByte(),
+                0xd6.toByte(),
+                0xd7.toByte(),
+                0xd8.toByte(),
             )
 
         val u = Uuid.fromBytes(b)
@@ -485,10 +511,22 @@ class UuidTest {
     fun testBytesRoundtrip() {
         val bIn =
             byteArrayOf(
-                0xa1.toByte(), 0xa2.toByte(), 0xa3.toByte(), 0xa4.toByte(),
-                0xb1.toByte(), 0xb2.toByte(), 0xc1.toByte(), 0xc2.toByte(),
-                0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(),
-                0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte(),
+                0xa1.toByte(),
+                0xa2.toByte(),
+                0xa3.toByte(),
+                0xa4.toByte(),
+                0xb1.toByte(),
+                0xb2.toByte(),
+                0xc1.toByte(),
+                0xc2.toByte(),
+                0xd1.toByte(),
+                0xd2.toByte(),
+                0xd3.toByte(),
+                0xd4.toByte(),
+                0xd5.toByte(),
+                0xd6.toByte(),
+                0xd7.toByte(),
+                0xd8.toByte(),
             )
 
         val u = Uuid.fromSlice(bIn).getOrThrow()
@@ -501,10 +539,22 @@ class UuidTest {
     fun testBytesLeRoundtrip() {
         val b =
             byteArrayOf(
-                0xa1.toByte(), 0xa2.toByte(), 0xa3.toByte(), 0xa4.toByte(),
-                0xb1.toByte(), 0xb2.toByte(), 0xc1.toByte(), 0xc2.toByte(),
-                0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(),
-                0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte(),
+                0xa1.toByte(),
+                0xa2.toByte(),
+                0xa3.toByte(),
+                0xa4.toByte(),
+                0xb1.toByte(),
+                0xb2.toByte(),
+                0xc1.toByte(),
+                0xc2.toByte(),
+                0xd1.toByte(),
+                0xd2.toByte(),
+                0xd3.toByte(),
+                0xd4.toByte(),
+                0xd5.toByte(),
+                0xd6.toByte(),
+                0xd7.toByte(),
+                0xd8.toByte(),
             )
 
         val u1 = Uuid.fromBytes(b)
