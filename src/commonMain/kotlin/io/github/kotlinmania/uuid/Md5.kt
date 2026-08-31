@@ -1,4 +1,4 @@
-// port-lint: source md5.rs
+// port-lint: source uuid/src/md5.rs
 package io.github.kotlinmania.uuid
 
 internal object Md5 {
