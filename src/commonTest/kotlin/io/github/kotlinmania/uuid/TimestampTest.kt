@@ -1,4 +1,4 @@
-// port-lint: tests timestamp.rs
+// port-lint: tests uuid/src/timestamp.rs
 package io.github.kotlinmania.uuid
 
 import kotlin.test.Test

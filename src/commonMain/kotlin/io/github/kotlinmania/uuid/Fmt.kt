@@ -1,4 +1,4 @@
-// port-lint: source fmt.rs
+// port-lint: source uuid/src/fmt.rs
 @file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
 
 package io.github.kotlinmania.uuid
