@@ -1,4 +1,4 @@
-// port-lint: source external/serde_support.rs
+// port-lint: source uuid/src/external/serde_support.rs
 package io.github.kotlinmania.uuid.external
 
 import io.github.kotlinmania.uuid.NonNilUuid
