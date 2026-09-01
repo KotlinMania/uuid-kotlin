@@ -17,6 +17,8 @@
   },
   "reexport_modules": [
     "macros",
+    "macros.rs",
+    "uuid/src/macros.rs",
     "external/serde_support",
     "external/arbitrary_support",
     "external/slog_support",
@@ -24,6 +26,13 @@
     "external.serde_support",
     "external.arbitrary_support",
     "external.slog_support",
-    "external.borsh_support"
+    "external.borsh_support",
+    "uuid/src/external/serde_support.rs",
+    "uuid/src/external/arbitrary_support.rs",
+    "uuid/src/external/slog_support.rs",
+    "uuid/src/external/borsh_support.rs",
+    "external",
+    "external.rs",
+    "uuid/src/external.rs"
   ]
 }
