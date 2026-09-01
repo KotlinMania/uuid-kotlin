@@ -1,4 +1,4 @@
-// port-lint: source uuid/src/v5.rs
+// port-lint: source v5.rs
 package io.github.kotlinmania.uuid
 
 /**

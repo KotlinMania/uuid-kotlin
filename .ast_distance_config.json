@@ -2,7 +2,7 @@
   "type": "port",
   "name": "uuid-kotlin",
   "source": {
-    "path": "tmp",
+    "path": "tmp/uuid/src",
     "lang": "rust"
   },
   "target": {

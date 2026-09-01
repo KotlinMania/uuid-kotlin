@@ -1,4 +1,4 @@
-// port-lint: source uuid/src/macros.rs
+// port-lint: source macros.rs
 package io.github.kotlinmania.uuid
 
 /**

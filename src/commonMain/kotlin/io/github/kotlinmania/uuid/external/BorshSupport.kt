@@ -1,4 +1,4 @@
-// port-lint: source uuid/src/external/borsh_support.rs
+// port-lint: source external/borsh_support.rs
 package io.github.kotlinmania.uuid.external
 
 import io.github.kotlinmania.uuid.Uuid
