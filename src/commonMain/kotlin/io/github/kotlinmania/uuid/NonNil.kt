@@ -3,6 +3,14 @@
 
 package io.github.kotlinmania.uuid
 
+import io.github.kotlinmania.serde.SerdeError
+import io.github.kotlinmania.serde.SerdeResult
+import io.github.kotlinmania.serdecore.de.Deserialize
+import io.github.kotlinmania.serdecore.de.Deserializer
+import io.github.kotlinmania.serdecore.de.Expected
+import io.github.kotlinmania.serdecore.de.Unexpected
+import io.github.kotlinmania.serdecore.ser.Serialize
+import io.github.kotlinmania.serdecore.ser.Serializer
 import kotlin.native.HiddenFromObjC
 
 /**
@@ -39,7 +47,8 @@ import kotlin.native.HiddenFromObjC
  */
 public class NonNilUuid private constructor(
     private val inner: Uuid,
-) : Comparable<NonNilUuid> {
+) : Comparable<NonNilUuid>,
+    Serialize {
     /**
      * Get the underlying [Uuid] value.
      */
@@ -86,7 +95,10 @@ public class NonNilUuid private constructor(
      */
     public fun partialCmp(other: Uuid): Int = inner.compareTo(other)
 
-    public companion object {
+    override fun <Ok> serialize(serializer: Serializer<Ok>): SerdeResult<Ok> =
+        inner.serialize(serializer)
+
+    public companion object : Deserialize<NonNilUuid> {
         /**
          * Creates a non-nil UUID if the value is non-nil.
          */
@@ -122,6 +134,22 @@ public class NonNilUuid private constructor(
             } else {
                 Result.success(NonNilUuid(uuid))
             }
+
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<NonNilUuid> {
+            val res = Uuid.deserialize(deserializer)
+            val uuid = res.getOrNull() ?: return SerdeResult.failure(res.exceptionOrNull()!!)
+            return NonNilUuid.tryFrom(uuid).fold(
+                onSuccess = { SerdeResult.success(it) },
+                onFailure = {
+                    SerdeResult.failure(
+                        SerdeError.invalidValue(
+                            Unexpected.Other("nil UUID"),
+                            Expected { "a non-nil UUID" },
+                        ),
+                    )
+                },
+            )
+        }
     }
 }
 

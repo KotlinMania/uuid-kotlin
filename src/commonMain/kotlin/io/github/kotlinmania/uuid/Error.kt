@@ -16,6 +16,8 @@ public class Error internal constructor(
 
     override fun hashCode(): Int = kind.hashCode()
 
+    override val message: String get() = fmt()
+
     override fun toString(): String = fmt()
 
     internal fun fmt(): String =
