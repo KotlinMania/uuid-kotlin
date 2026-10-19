@@ -1,98 +1,23 @@
-// port-lint: source lib.rs
 @file:OptIn(kotlin.experimental.ExperimentalObjCRefinement::class)
 
 package io.github.kotlinmania.uuid
 
+import io.github.kotlinmania.serde.SerdeResult
+import io.github.kotlinmania.serdecore.de.Deserialize
+import io.github.kotlinmania.serdecore.de.Deserializer
+import io.github.kotlinmania.serdecore.ser.Serialize
+import io.github.kotlinmania.serdecore.ser.Serializer
+import io.github.kotlinmania.uuid.external.UuidBytesVisitor
+import io.github.kotlinmania.uuid.external.UuidReadableVisitor
 import kotlin.native.HiddenFromObjC
-
-/**
- * The version of the UUID, denoting the generating algorithm.
- */
-public enum class Version(
-    public val number: Int,
-) {
-    /**
-     * The nil, all-zero UUID.
-     */
-    Nil(0),
-
-    /**
-     * Version 1: timestamp and node ID.
-     */
-    Mac(1),
-
-    /**
-     * Version 2: DCE Security.
-     */
-    Dce(2),
-
-    /**
-     * Version 3: MD5 hash.
-     */
-    Md5(3),
-
-    /**
-     * Version 4: random.
-     */
-    Random(4),
-
-    /**
-     * Version 5: SHA-1 hash.
-     */
-    Sha1(5),
-
-    /**
-     * Version 6: sortable timestamp and node ID.
-     */
-    SortMac(6),
-
-    /**
-     * Version 7: timestamp and random.
-     */
-    SortRand(7),
-
-    /**
-     * Version 8: custom.
-     */
-    Custom(8),
-
-    /**
-     * The max, all-ones UUID.
-     */
-    Max(0xff),
-}
-
-/**
- * The reserved variants of UUIDs.
- */
-public enum class Variant {
-    /**
-     * Reserved by the NCS for backward compatibility.
-     */
-    NCS,
-
-    /**
-     * As described in RFC 9562.
-     */
-    RFC4122,
-
-    /**
-     * Reserved by Microsoft for backward compatibility.
-     */
-    Microsoft,
-
-    /**
-     * Reserved for future expansion.
-     */
-    Future,
-}
 
 /**
  * A Universally Unique Identifier.
  */
 public class Uuid private constructor(
     private val bytes: ByteArray,
-) : Comparable<Uuid> {
+) : Comparable<Uuid>,
+    Serialize {
     /**
      * Returns the variant of the UUID structure.
      */
@@ -291,6 +216,13 @@ public class Uuid private constructor(
 
     override fun toString(): String = hyphenated().toString()
 
+    override fun <Ok> serialize(serializer: Serializer<Ok>): SerdeResult<Ok> =
+        if (serializer.isHumanReadable()) {
+            serializer.serializeStr(hyphenated().toString())
+        } else {
+            serializer.serializeBytes(asBytes())
+        }
+
     private fun readU64(offset: Int): ULong {
         var value = 0UL
         for (i in 0 until 8) {
@@ -307,7 +239,7 @@ public class Uuid private constructor(
         return value
     }
 
-    public companion object {
+    public companion object : Deserialize<Uuid> {
         /**
          * The nil UUID, with all bits set to zero.
          */
@@ -604,6 +536,24 @@ public class Uuid private constructor(
          * Returns a buffer long enough for any format adapter.
          */
         public fun encodeBuffer(): ByteArray = ByteArray(Urn.LENGTH)
+
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<Uuid> =
+            if (deserializer.isHumanReadable()) {
+                deserializer.deserializeStr(
+                    UuidReadableVisitor(
+                        expectingMessage = "a formatted UUID string",
+                        fromStr = { str -> runCatching { parseStr(str) } },
+                        fromSlice = { slice -> fromSlice(slice) },
+                        fromBytes = { b -> Result.success(fromBytes(b)) },
+                    ),
+                )
+            } else {
+                deserializer.deserializeBytes(
+                    UuidBytesVisitor(
+                        fromSlice = { slice -> fromSlice(slice) },
+                    ),
+                )
+            }
 
         private fun writeU64(
             target: ByteArray,

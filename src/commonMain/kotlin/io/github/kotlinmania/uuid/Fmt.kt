@@ -3,6 +3,12 @@
 
 package io.github.kotlinmania.uuid
 
+import io.github.kotlinmania.serde.SerdeResult
+import io.github.kotlinmania.serdecore.de.Deserialize
+import io.github.kotlinmania.serdecore.de.Deserializer
+import io.github.kotlinmania.serdecore.ser.Serialize
+import io.github.kotlinmania.serdecore.ser.Serializer
+import io.github.kotlinmania.uuid.external.UuidReadableVisitor
 import kotlin.native.HiddenFromObjC
 
 /**
@@ -11,7 +17,7 @@ import kotlin.native.HiddenFromObjC
  */
 public class Hyphenated internal constructor(
     private val uuid: Uuid,
-) {
+) : Serialize {
     public fun encodeLower(buffer: ByteArray): String = encodeHyphenated(uuid.rawBytes(), buffer, upper = false)
 
     public fun encodeUpper(buffer: ByteArray): String = encodeHyphenated(uuid.rawBytes(), buffer, upper = true)
@@ -28,7 +34,10 @@ public class Hyphenated internal constructor(
 
     override fun toString(): String = encodeLower(ByteArray(LENGTH))
 
-    public companion object {
+    override fun <Ok> serialize(serializer: Serializer<Ok>): SerdeResult<Ok> =
+        serializer.serializeStr(encodeLower(ByteArray(LENGTH)))
+
+    public companion object : Deserialize<Hyphenated> {
         /**
          * The length of a hyphenated UUID string.
          */
@@ -55,7 +64,20 @@ public class Hyphenated internal constructor(
          */
         @HiddenFromObjC
         public fun parse(input: String): Result<Hyphenated> =
-            parseHyphenated(input.encodeToByteArray()).map { Hyphenated(Uuid.fromBytes(it)) }
+            parseHyphenated(input.encodeToByteArray()).fold(
+                onSuccess = { Result.success(Hyphenated(Uuid.fromBytes(it))) },
+                onFailure = { failure -> Result.failure(if (failure is InvalidUuid) failure.intoErr() else failure) },
+            )
+
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<Hyphenated> =
+            deserializer.deserializeStr(
+                UuidReadableVisitor(
+                    expectingMessage = "a UUID string in the hyphenated format",
+                    fromStr = { str -> fromStr(str) },
+                    fromSlice = { slice -> Uuid.fromSlice(slice).map { Hyphenated(it) } },
+                    fromBytes = { bytes -> Result.success(Hyphenated(Uuid.fromBytes(bytes))) },
+                ),
+            )
     }
 }
 
@@ -65,7 +87,7 @@ public class Hyphenated internal constructor(
  */
 public class Simple internal constructor(
     private val uuid: Uuid,
-) {
+) : Serialize {
     public fun encodeLower(buffer: ByteArray): String = encodeSimple(uuid.rawBytes(), buffer, upper = false)
 
     public fun encodeUpper(buffer: ByteArray): String = encodeSimple(uuid.rawBytes(), buffer, upper = true)
@@ -80,7 +102,10 @@ public class Simple internal constructor(
 
     override fun toString(): String = encodeLower(ByteArray(LENGTH))
 
-    public companion object {
+    override fun <Ok> serialize(serializer: Serializer<Ok>): SerdeResult<Ok> =
+        serializer.serializeStr(encodeLower(ByteArray(LENGTH)))
+
+    public companion object : Deserialize<Simple> {
         /**
          * The length of a simple UUID string.
          */
@@ -107,7 +132,20 @@ public class Simple internal constructor(
          */
         @HiddenFromObjC
         public fun parse(input: String): Result<Simple> =
-            parseSimple(input.encodeToByteArray()).map { Simple(Uuid.fromBytes(it)) }
+            parseSimple(input.encodeToByteArray()).fold(
+                onSuccess = { Result.success(Simple(Uuid.fromBytes(it))) },
+                onFailure = { failure -> Result.failure(if (failure is InvalidUuid) failure.intoErr() else failure) },
+            )
+
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<Simple> =
+            deserializer.deserializeStr(
+                UuidReadableVisitor(
+                    expectingMessage = "a UUID string in the simple format",
+                    fromStr = { str -> fromStr(str) },
+                    fromSlice = { slice -> Uuid.fromSlice(slice).map { Simple(it) } },
+                    fromBytes = { bytes -> Result.success(Simple(Uuid.fromBytes(bytes))) },
+                ),
+            )
     }
 }
 
@@ -117,7 +155,7 @@ public class Simple internal constructor(
  */
 public class Urn internal constructor(
     private val uuid: Uuid,
-) {
+) : Serialize {
     public fun encodeLower(buffer: ByteArray): String = encodeUrn(uuid.rawBytes(), buffer, upper = false)
 
     public fun encodeUpper(buffer: ByteArray): String = encodeUrn(uuid.rawBytes(), buffer, upper = true)
@@ -132,7 +170,10 @@ public class Urn internal constructor(
 
     override fun toString(): String = encodeLower(ByteArray(LENGTH))
 
-    public companion object {
+    override fun <Ok> serialize(serializer: Serializer<Ok>): SerdeResult<Ok> =
+        serializer.serializeStr(encodeLower(ByteArray(LENGTH)))
+
+    public companion object : Deserialize<Urn> {
         /**
          * The length of a URN UUID string.
          */
@@ -159,7 +200,20 @@ public class Urn internal constructor(
          */
         @HiddenFromObjC
         public fun parse(input: String): Result<Urn> =
-            parseUrn(input.encodeToByteArray()).map { Urn(Uuid.fromBytes(it)) }
+            parseUrn(input.encodeToByteArray()).fold(
+                onSuccess = { Result.success(Urn(Uuid.fromBytes(it))) },
+                onFailure = { failure -> Result.failure(if (failure is InvalidUuid) failure.intoErr() else failure) },
+            )
+
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<Urn> =
+            deserializer.deserializeStr(
+                UuidReadableVisitor(
+                    expectingMessage = "a UUID string in the URN format",
+                    fromStr = { str -> fromStr(str) },
+                    fromSlice = { slice -> Uuid.fromSlice(slice).map { Urn(it) } },
+                    fromBytes = { bytes -> Result.success(Urn(Uuid.fromBytes(bytes))) },
+                ),
+            )
     }
 }
 
@@ -169,7 +223,7 @@ public class Urn internal constructor(
  */
 public class Braced internal constructor(
     private val uuid: Uuid,
-) {
+) : Serialize {
     public fun encodeLower(buffer: ByteArray): String = encodeBraced(uuid.rawBytes(), buffer, upper = false)
 
     public fun encodeUpper(buffer: ByteArray): String = encodeBraced(uuid.rawBytes(), buffer, upper = true)
@@ -184,7 +238,10 @@ public class Braced internal constructor(
 
     override fun toString(): String = encodeLower(ByteArray(LENGTH))
 
-    public companion object {
+    override fun <Ok> serialize(serializer: Serializer<Ok>): SerdeResult<Ok> =
+        serializer.serializeStr(encodeLower(ByteArray(LENGTH)))
+
+    public companion object : Deserialize<Braced> {
         /**
          * The length of a braced UUID string.
          */
@@ -211,7 +268,20 @@ public class Braced internal constructor(
          */
         @HiddenFromObjC
         public fun parse(input: String): Result<Braced> =
-            parseBraced(input.encodeToByteArray()).map { Braced(Uuid.fromBytes(it)) }
+            parseBraced(input.encodeToByteArray()).fold(
+                onSuccess = { Result.success(Braced(Uuid.fromBytes(it))) },
+                onFailure = { failure -> Result.failure(if (failure is InvalidUuid) failure.intoErr() else failure) },
+            )
+
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<Braced> =
+            deserializer.deserializeStr(
+                UuidReadableVisitor(
+                    expectingMessage = "a UUID string in the braced format",
+                    fromStr = { str -> fromStr(str) },
+                    fromSlice = { slice -> Uuid.fromSlice(slice).map { Braced(it) } },
+                    fromBytes = { bytes -> Result.success(Braced(Uuid.fromBytes(bytes))) },
+                ),
+            )
     }
 }
 
