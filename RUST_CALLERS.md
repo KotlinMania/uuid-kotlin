@@ -16,15 +16,15 @@ For every Rust crate this repo owns (under `tmp/`), this file lists every **cros
 
 | package | module | inbound use sites | distinct caller crates | distinct caller repos | codex sites |
 |---|---|---:|---:|---:|---:|
-| `uuid` | `uuid` | 63 | 17 | 4 | 58 |
+| `uuid` | `uuid` | 69 | 20 | 7 | 58 |
 
 ## `uuid`
 
-### Inbound symbols (2 distinct, 63 total `use` sites)
+### Inbound symbols (3 distinct, 69 total `use` sites)
 
 Sorted by codex demand, then total demand. The first symbols are the priority queue for porting `uuid`.
 
-#### `uuid::Uuid` — 61 site(s) (58 codex, 3 other, 16 caller crates)
+#### `uuid::Uuid` — 66 site(s) (58 codex, 8 other, 19 caller crates)
 
 - ✅ `codex-kotlin/app_test_support` `rollout.rs:16` — `use uuid::Uuid`
 - ✅ `codex-kotlin/codex-app-server` `src/filters.rs:89` — `use uuid::Uuid`
@@ -38,9 +38,13 @@ Sorted by codex demand, then total demand. The first symbols are the priority qu
 - ✅ `codex-kotlin/codex-app-server` `tests/suite/v2/thread_resume.rs:80` — `use uuid::Uuid`
 - ✅ `codex-kotlin/codex-app-server-protocol` `src/export.rs:2097` — `use uuid::Uuid`
 - ✅ `codex-kotlin/codex-app-server-protocol` `src/protocol/thread_history.rs:58` — `use uuid::Uuid`
-- _… and 49 more site(s)._
+- _… and 54 more site(s)._
 
 #### `uuid1::Uuid` — 2 site(s) (0 codex, 2 other, 1 caller crates)
 
 - `schemars-kotlin/schemars` `src/json_schema_impls/uuid1.rs:4` — `use uuid1::Uuid`
 - `schemars-kotlin/schemars` `tests/integration/uuid.rs:2` — `use uuid1::Uuid`
+
+#### `uuid::NonNilUuid` — 1 site(s) (0 codex, 1 other, 1 caller crates)
+
+- `pyo3-kotlin/pyo3` `src/conversions/uuid.rs:14` — `use uuid::NonNilUuid`
