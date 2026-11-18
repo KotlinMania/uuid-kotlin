@@ -6,6 +6,7 @@ import io.github.kotlinmania.serde.SerdeResult
 import io.github.kotlinmania.serdecore.de.Deserialize
 import io.github.kotlinmania.serdecore.de.Deserializer
 import io.github.kotlinmania.serdecore.de.SeqAccess
+import io.github.kotlinmania.serdecore.de.SeqElement
 import io.github.kotlinmania.serdecore.de.Visitor
 import io.github.kotlinmania.serdecore.ser.Serialize
 import io.github.kotlinmania.serdecore.ser.Serializer
@@ -62,9 +63,13 @@ internal class UuidReadableVisitor<T : Any>(
     override fun <A : SeqAccess> visitSeq(access: A): SerdeResult<T> {
         val bytes = ByteArray(16)
         for (i in 0 until 16) {
+            val next = access.nextElement(UuidByteElementDeserialize)
+            if (next.isFailure) return SerdeResult.failure(next.exceptionOrNull()!!)
             val elem =
-                access.nextElement(UuidByteElementDeserialize).getOrNull()
-                    ?: return SerdeResult.failure(SerdeError.invalidLength(i, this))
+                when (val seqElem = next.getOrNull()) {
+                    is SeqElement.Some -> seqElem.value
+                    else -> return SerdeResult.failure(SerdeError.invalidLength(i, this))
+                }
             bytes[i] = elem
         }
         return fromBytes(bytes).fold(
@@ -170,8 +175,10 @@ public object SerdeSupport {
                             val next = access.nextElement(UuidByteElementDeserialize)
                             if (next.isFailure) return SerdeResult.failure(next.exceptionOrNull()!!)
                             val elem =
-                                next.getOrNull()
-                                    ?: return SerdeResult.failure(SerdeError.invalidLength(i, this))
+                                when (val seqElem = next.getOrNull()) {
+                                    is SeqElement.Some -> seqElem.value
+                                    else -> return SerdeResult.failure(SerdeError.invalidLength(i, this))
+                                }
                             bytes[i] = elem
                         }
                         return SerdeResult.success(Uuid.fromBytes(bytes))

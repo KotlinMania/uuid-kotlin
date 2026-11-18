@@ -291,13 +291,13 @@ class UuidTest {
     @Test
     fun testAsFields() {
         val u = new()
-        val (d1, d2, d3, d4) = u.asFields()
+        val fields = u.asFields()
 
-        assertNotEquals(0u, d1)
-        assertNotEquals(0u.toUShort(), d2)
-        assertNotEquals(0u.toUShort(), d3)
-        assertEquals(8, d4.size)
-        assertFalse(d4.all { it == 0.toByte() })
+        assertNotEquals(0u, fields.d1)
+        assertNotEquals(0u.toUShort(), fields.d2)
+        assertNotEquals(0u.toUShort(), fields.d3)
+        assertEquals(8, fields.d4.size)
+        assertFalse(fields.d4.all { it == 0.toByte() })
     }
 
     @Test
@@ -308,12 +308,12 @@ class UuidTest {
         val d4In = byteArrayOf(0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(), 0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte())
 
         val u = Uuid.fromFields(d1In, d2In, d3In, d4In)
-        val (d1Out, d2Out, d3Out, d4Out) = u.asFields()
+        val out = u.asFields()
 
-        assertEquals(d1In, d1Out)
-        assertEquals(d2In, d2Out)
-        assertEquals(d3In, d3Out)
-        assertContentEquals(d4In, d4Out)
+        assertEquals(d1In, out.d1)
+        assertEquals(d2In, out.d2)
+        assertEquals(d3In, out.d3)
+        assertContentEquals(d4In, out.d4)
     }
 
     @Test
@@ -324,12 +324,12 @@ class UuidTest {
         val d4In = byteArrayOf(0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(), 0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte())
 
         val u = Uuid.fromFieldsLe(d1In, d2In, d3In, d4In)
-        val (d1Out, d2Out, d3Out, d4Out) = u.toFieldsLe()
+        val out = u.toFieldsLe()
 
-        assertEquals(d1In, d1Out)
-        assertEquals(d2In, d2Out)
-        assertEquals(d3In, d3Out)
-        assertContentEquals(d4In, d4Out)
+        assertEquals(d1In, out.d1)
+        assertEquals(d2In, out.d2)
+        assertEquals(d3In, out.d3)
+        assertContentEquals(d4In, out.d4)
     }
 
     @Test
@@ -340,12 +340,12 @@ class UuidTest {
         val d4In = byteArrayOf(0xd1.toByte(), 0xd2.toByte(), 0xd3.toByte(), 0xd4.toByte(), 0xd5.toByte(), 0xd6.toByte(), 0xd7.toByte(), 0xd8.toByte())
 
         val u = Uuid.fromFields(d1In, d2In, d3In, d4In)
-        val (d1Out, d2Out, d3Out, d4Out) = u.toFieldsLe()
+        val out = u.toFieldsLe()
 
-        assertEquals(d1In, d1Out.reverseBytes())
-        assertEquals(d2In, d2Out.reverseBytes())
-        assertEquals(d3In, d3Out.reverseBytes())
-        assertContentEquals(d4In, d4Out)
+        assertEquals(d1In, out.d1.reverseBytes())
+        assertEquals(d2In, out.d2.reverseBytes())
+        assertEquals(d3In, out.d3.reverseBytes())
+        assertContentEquals(d4In, out.d4)
     }
 
     @Test

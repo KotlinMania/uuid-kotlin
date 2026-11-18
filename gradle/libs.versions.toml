@@ -9,8 +9,8 @@ detekt = "2.0.0-alpha.6"
 ktlint = "14.2.0"
 ktlintEngine = "1.8.0"
 kotlinxBenchmark = "0.5.0"
-serde = "0.1.11"
-serdeTest = "0.1.1"
+serde = "0.1.12"
+serdeTest = "0.1.2"
 getrandom = "0.1.0"
 
 androidxTestRunner = "1.7.0"
@@ -32,7 +32,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "datetime" }
 collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "collectionsImmutable" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinxBenchmark" }
-serde-core = { module = "io.github.kotlinmania:serde-core", version.ref = "serde" }
+serde-kotlin = { module = "io.github.kotlinmania:serde-kotlin", version.ref = "serde" }
 serde-test-kotlin = { module = "io.github.kotlinmania:serde-test-kotlin", version.ref = "serdeTest" }
 getrandom-kotlin = { module = "io.github.kotlinmania:getrandom-kotlin", version.ref = "getrandom" }
 
@@ -40,10 +40,7 @@ androidx-test-runner = { module = "androidx.test:runner", version.ref = "android
 
 [bundles]
 uuid-commonMain = [
-  "kotlinx-coroutines-core",
-  "kotlinx-datetime",
-  "collections-immutable",
-  "serde-core",
+  "serde-kotlin",
   "getrandom-kotlin",
 ]
 uuid-commonTest = [

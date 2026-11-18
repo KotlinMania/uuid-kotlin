@@ -7,6 +7,7 @@ import io.github.kotlinmania.serdecore.de.Deserialize
 import io.github.kotlinmania.serdecore.de.Deserializer
 import io.github.kotlinmania.serdecore.de.MapAccess
 import io.github.kotlinmania.serdecore.de.SeqAccess
+import io.github.kotlinmania.serdecore.de.SeqElement
 import io.github.kotlinmania.serdecore.de.StringDeserialize
 import io.github.kotlinmania.serdecore.de.Visitor
 import io.github.kotlinmania.serdecore.ser.Serialize
@@ -19,6 +20,11 @@ import io.github.kotlinmania.serdetest.compact
 import io.github.kotlinmania.serdetest.readable
 import io.github.kotlinmania.uuid.external.SerdeSupport
 import kotlin.test.Test
+
+private fun deserializeUuid(block: (Deserializer) -> SerdeResult<Uuid>): Deserialize<Uuid> =
+    object : Deserialize<Uuid> {
+        override fun <D : Deserializer> deserialize(deserializer: D): SerdeResult<Uuid> = block(deserializer)
+    }
 
 class SerdeSupportTest {
     private data class UuidContainer(
@@ -56,10 +62,7 @@ class SerdeSupportTest {
                                     u =
                                         access
                                             .nextValue(
-                                                object : Deserialize<Uuid> {
-                                                    override fun <D2 : Deserializer> deserialize(deserializer: D2): SerdeResult<Uuid> =
-                                                        SerdeSupport.Compact.deserialize(deserializer)
-                                                },
+                                                deserializeUuid { SerdeSupport.Compact.deserialize(it) },
                                             ).getOrNull()
                                 }
                             }
@@ -94,13 +97,14 @@ class SerdeSupportTest {
                         override fun <A : SeqAccess> visitSeq(access: A): SerdeResult<SimpleStruct> {
                             val next =
                                 access.nextElement(
-                                    object : Deserialize<Uuid> {
-                                        override fun <D2 : Deserializer> deserialize(deserializer: D2): SerdeResult<Uuid> =
-                                            SerdeSupport.SimpleFormat.deserialize(deserializer)
-                                    },
+                                    deserializeUuid { SerdeSupport.SimpleFormat.deserialize(it) },
                                 )
                             if (next.isFailure) return SerdeResult.failure(next.exceptionOrNull()!!)
-                            val uuid = next.getOrNull() ?: return SerdeResult.failure(SerdeError.invalidLength(0, this))
+                            val uuid =
+                                when (val seqElem = next.getOrNull()) {
+                                    is SeqElement.Some -> seqElem.value
+                                    else -> return SerdeResult.failure(SerdeError.invalidLength(0, this))
+                                }
                             return SerdeResult.success(SimpleStruct(uuid))
                         }
                     },
@@ -131,13 +135,14 @@ class SerdeSupportTest {
                         override fun <A : SeqAccess> visitSeq(access: A): SerdeResult<BracedStruct> {
                             val next =
                                 access.nextElement(
-                                    object : Deserialize<Uuid> {
-                                        override fun <D2 : Deserializer> deserialize(deserializer: D2): SerdeResult<Uuid> =
-                                            SerdeSupport.BracedFormat.deserialize(deserializer)
-                                    },
+                                    deserializeUuid { SerdeSupport.BracedFormat.deserialize(it) },
                                 )
                             if (next.isFailure) return SerdeResult.failure(next.exceptionOrNull()!!)
-                            val uuid = next.getOrNull() ?: return SerdeResult.failure(SerdeError.invalidLength(0, this))
+                            val uuid =
+                                when (val seqElem = next.getOrNull()) {
+                                    is SeqElement.Some -> seqElem.value
+                                    else -> return SerdeResult.failure(SerdeError.invalidLength(0, this))
+                                }
                             return SerdeResult.success(BracedStruct(uuid))
                         }
                     },
@@ -168,13 +173,14 @@ class SerdeSupportTest {
                         override fun <A : SeqAccess> visitSeq(access: A): SerdeResult<UrnStruct> {
                             val next =
                                 access.nextElement(
-                                    object : Deserialize<Uuid> {
-                                        override fun <D2 : Deserializer> deserialize(deserializer: D2): SerdeResult<Uuid> =
-                                            SerdeSupport.UrnFormat.deserialize(deserializer)
-                                    },
+                                    deserializeUuid { SerdeSupport.UrnFormat.deserialize(it) },
                                 )
                             if (next.isFailure) return SerdeResult.failure(next.exceptionOrNull()!!)
-                            val uuid = next.getOrNull() ?: return SerdeResult.failure(SerdeError.invalidLength(0, this))
+                            val uuid =
+                                when (val seqElem = next.getOrNull()) {
+                                    is SeqElement.Some -> seqElem.value
+                                    else -> return SerdeResult.failure(SerdeError.invalidLength(0, this))
+                                }
                             return SerdeResult.success(UrnStruct(uuid))
                         }
                     },
